@@ -1,7 +1,7 @@
-package com.example.cinemabackend.controller;
+package com.example.cinema_backend_part.controller;
 
-import com.example.cinemabackend.model.Ticket;
-import com.example.cinemabackend.service.TicketService;
+import com.example.cinema_backend_part.model.Ticket;
+import com.example.cinema_backend_part.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tickets")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TicketController {
     @Autowired
     private TicketService ticketService;

@@ -1,7 +1,9 @@
-package com.example.cinemabackend.repository;
+package com.example.cinema_backend_part.repository;
 
-import com.example.cinemabackend.model.Session;
+import com.example.cinema_backend_part.model.Sessions;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface FilmRepository extends JpaRepository<Session, Long> {
+@Repository
+public interface SessionRepository extends JpaRepository<Sessions, Long> {
 }

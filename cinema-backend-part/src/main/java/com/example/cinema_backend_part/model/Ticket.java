@@ -1,7 +1,14 @@
-package com.example.cinemabackend.model;
+package com.example.cinema_backend_part.model;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 
 @Entity
 public class Ticket {
@@ -11,7 +18,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "session_id", nullable = false)
-    private Session session;
+    private Sessions session;
 
     private String seatNumber;
     private LocalDateTime purchaseDate;
