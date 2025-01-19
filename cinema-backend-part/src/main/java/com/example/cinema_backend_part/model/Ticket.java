@@ -1,14 +1,6 @@
 package com.example.cinema_backend_part.model;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
+import jakarta.persistence.*;
 
 @Entity
 public class Ticket {
@@ -16,12 +8,44 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private double price;
+
+    private int seatNumber;
+
     @ManyToOne
     @JoinColumn(name = "session_id", nullable = false)
     private Sessions session;
 
-    private String seatNumber;
-    private LocalDateTime purchaseDate;
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
-    // Геттеры и сеттеры
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(int seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public Sessions getSession() {
+        return session;
+    }
+
+    public void setSession(Sessions session) {
+        this.session = session;
+    }
 }
