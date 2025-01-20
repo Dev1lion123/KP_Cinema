@@ -1,4 +1,4 @@
-package com.example.cinema_backend_part;
+package com.cinema_backend_part.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

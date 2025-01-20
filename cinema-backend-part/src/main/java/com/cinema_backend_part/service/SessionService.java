@@ -1,7 +1,7 @@
-package com.example.cinema_backend_part.service;
+package com.cinema_backend_part.service;
 
-import com.example.cinema_backend_part.model.Sessions;
-import com.example.cinema_backend_part.repository.SessionRepository;
+import com.cinema_backend_part.model.Sessions;
+import com.cinema_backend_part.repository.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

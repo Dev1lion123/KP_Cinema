@@ -1,7 +1,7 @@
-package com.example.cinema_backend_part.controller;
+package com.cinema_backend_part.controller;
 
-import com.example.cinema_backend_part.model.Ticket;
-import com.example.cinema_backend_part.service.TicketService;
+import com.cinema_backend_part.model.Ticket;
+import com.cinema_backend_part.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.example.cinema_backend_part.model;
+package com.cinema_backend_part.model;
 
 import jakarta.persistence.*;
 

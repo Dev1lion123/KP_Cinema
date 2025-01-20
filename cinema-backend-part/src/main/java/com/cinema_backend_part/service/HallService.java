@@ -1,7 +1,7 @@
-package com.example.cinema_backend_part.service;
+package com.cinema_backend_part.service;
 
-import com.example.cinema_backend_part.model.Hall;
-import com.example.cinema_backend_part.repository.HallRepository;
+import com.cinema_backend_part.model.Hall;
+import com.cinema_backend_part.repository.HallRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

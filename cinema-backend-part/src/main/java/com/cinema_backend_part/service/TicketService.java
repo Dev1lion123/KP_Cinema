@@ -1,7 +1,7 @@
-package com.example.cinema_backend_part.service;
+package com.cinema_backend_part.service;
 
-import com.example.cinema_backend_part.model.Ticket;
-import com.example.cinema_backend_part.repository.TicketRepository;
+import com.cinema_backend_part.model.Ticket;
+import com.cinema_backend_part.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
