@@ -19,7 +19,6 @@ public class Film {
     private Date releaseDate;
     private BigDecimal rating;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

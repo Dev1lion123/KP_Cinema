@@ -28,7 +28,6 @@ public class Sessions {
     private LocalDate sessionDate;
     private LocalTime sessionTime;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

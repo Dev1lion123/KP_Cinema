@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/halls")
-@CrossOrigin(origins = "http://localhost:3000")
 public class HallController {
     @Autowired
     private HallService hallService;
@@ -18,6 +17,13 @@ public class HallController {
     @GetMapping
     public List<Hall> getAllHalls() {
         return hallService.getAllHalls();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Hall> getHallById(@PathVariable Long id) {
+        return hallService.getHallById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

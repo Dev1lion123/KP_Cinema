@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/api/films")
-@CrossOrigin(origins = "http://localhost:3000")
 public class FilmController {
     @Autowired
     private FilmService filmService;
@@ -21,28 +21,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
+    public Film createFilm(@RequestBody Film film) {
         return filmService.saveFilm(film);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Film> updateFilm(@PathVariable Long id, @RequestBody Film updatedFilm) {
-        return filmService.getFilmById(id)
-                .map(film -> {
-                    film.setTitle(updatedFilm.getTitle());
-                    film.setGenre(updatedFilm.getGenre());
-                    film.setDescription(updatedFilm.getDescription());
-                    film.setReleaseDate(updatedFilm.getReleaseDate());
-                    film.setRating(updatedFilm.getRating());
-                    Film savedFilm = filmService.saveFilm(film);
-                    return ResponseEntity.ok(savedFilm);
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFilm(@PathVariable Long id) {
-        filmService.deleteFilm(id);
-        return ResponseEntity.noContent().build();
     }
 }

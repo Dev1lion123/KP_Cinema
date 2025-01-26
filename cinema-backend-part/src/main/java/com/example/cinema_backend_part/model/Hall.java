@@ -13,7 +13,6 @@ public class Hall {
     private String name;
     private int capacity;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

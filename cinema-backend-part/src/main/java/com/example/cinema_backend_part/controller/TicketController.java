@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
-
     @Autowired
     private TicketService ticketService;
 
@@ -28,7 +27,7 @@ public class TicketController {
     }
 
     @PostMapping
-    public Ticket createTicket(@RequestBody Ticket ticket) {
+    public Ticket addTicket(@RequestBody Ticket ticket) {
         return ticketService.saveTicket(ticket);
     }
 
@@ -37,8 +36,8 @@ public class TicketController {
         return ticketService.getTicketById(id)
                 .map(ticket -> {
                     ticket.setPrice(updatedTicket.getPrice());
-                    ticket.setSeatNumber(updatedTicket.getSeatNumber());
                     ticket.setSession(updatedTicket.getSession());
+                    ticket.setSeatNumber(updatedTicket.getSeatNumber());
                     Ticket savedTicket = ticketService.saveTicket(ticket);
                     return ResponseEntity.ok(savedTicket);
                 })

@@ -14,16 +14,6 @@ function FilmList() {
             });
     }, []);
 
-    const handleDelete = (id) => {
-        axios.delete(`http://localhost:8080/api/films/${id}`)
-            .then(() => {
-                setFilms(films.filter(film => film.id !== id));
-            })
-            .catch(error => {
-                console.error("Ошибка при удалении фильма:", error);
-            });
-    };
-
     return (
         <div>
             <h1>Список фильмов</h1>
@@ -35,7 +25,6 @@ function FilmList() {
                         <p>{film.description}</p>
                         <p>Дата выхода: {film.releaseDate}</p>
                         <p>Рейтинг: {film.rating}</p>
-                        <button onClick={() => handleDelete(film.id)}>Удалить</button>
                     </li>
                 ))}
             </ul>

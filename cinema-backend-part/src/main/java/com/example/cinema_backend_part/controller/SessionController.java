@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sessions")
-@CrossOrigin(origins = "http://localhost:3000")
 public class SessionController {
     @Autowired
     private SessionService sessionService;
@@ -18,6 +17,13 @@ public class SessionController {
     @GetMapping
     public List<Sessions> getAllSessions() {
         return sessionService.getAllSessions();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Sessions> getSessionById(@PathVariable Long id) {
+        return sessionService.getSessionById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
