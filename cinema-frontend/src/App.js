@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import FilmList from './components/FilmList';
 import AddFilm from './components/AddFilm';
 
 function App() {
-    const [films, setFilms] = useState([]);
+    const filmListRef = useRef(); // Используем реф для доступа к методу обновления в FilmList
 
-    const handleFilmAdded = (newFilm) => {
-        setFilms([...films, newFilm]); // Добавляем новый фильм в список
+    const handleFilmAdded = () => {
+        if (filmListRef.current) {
+            filmListRef.current.refreshFilms(); // Обновляем список фильмов
+        }
     };
 
     return (
         <div className="App">
             <AddFilm onFilmAdded={handleFilmAdded} />
-            <FilmList films={films} />
+            <FilmList ref={filmListRef} />
         </div>
     );
 }
