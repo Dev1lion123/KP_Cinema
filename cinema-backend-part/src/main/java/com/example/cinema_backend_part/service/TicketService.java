@@ -1,9 +1,10 @@
 package com.example.cinema_backend_part.service;
 
-import com.example.cinema_backend_part.model.Ticket;
-import com.example.cinema_backend_part.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.cinema_backend_part.model.Ticket;
+import com.example.cinema_backend_part.repository.TicketRepository;
 
 import java.util.List;
 import java.util.Optional;

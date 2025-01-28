@@ -1,12 +1,21 @@
 package com.example.cinema_backend_part.service;
 
-import com.example.cinema_backend_part.model.User;
-import com.example.cinema_backend_part.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.cinema_backend_part.model.SpringSecurityUser;
+import com.example.cinema_backend_part.model.User;
+import com.example.cinema_backend_part.repository.UserRepository;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.Collections;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -15,16 +24,22 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(String username, String password, User.Role role) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-        User user = new User(null, username, passwordEncoder.encode(password), role);
-        return userRepository.save(user);
+    // Метод для регистрации нового пользователя
+    public void registerUser(String username, String password, User.Role role) {
+        // Шифруем пароль перед сохранением
+        String encodedPassword = passwordEncoder.encode(password);
+        
+        // Создаем нового пользователя
+        User user = new User(username, encodedPassword, role);
+
+        // Сохраняем пользователя в базе данных
+        userRepository.save(user);
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        com.example.cinema_backend_part.model.User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        return new SpringSecurityUser(user.getUsername(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name())));
     }
 }

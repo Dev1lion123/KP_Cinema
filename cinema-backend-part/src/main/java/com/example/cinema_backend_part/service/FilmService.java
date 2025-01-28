@@ -1,9 +1,11 @@
 package com.example.cinema_backend_part.service;
 
-import com.example.cinema_backend_part.model.Film;
-import com.example.cinema_backend_part.repository.FilmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.cinema_backend_part.model.Film;
+import com.example.cinema_backend_part.repository.FilmRepository;
+
 
 import java.util.List;
 import java.util.Optional;
