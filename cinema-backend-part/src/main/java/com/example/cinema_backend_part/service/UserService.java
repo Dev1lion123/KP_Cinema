@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 
 @Service
@@ -24,33 +23,21 @@ public class UserService implements UserDetailsService {
     }
 
     public void registerUser(String username, String password, User.Role role) {
-        // Проверка на существование пользователя с таким именем.
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("Пользователь с таким именем уже существует");
+            throw new IllegalArgumentException("Пользователь уже существует");
         }
-
-        // Шифрование пароля перед сохранением.
-        String encodedPassword = passwordEncoder.encode(password);
-
-        // Создание нового пользователя.
-        User user = new User(username, encodedPassword, role);
-
-        // Сохранение пользователя в базе данных.
+        User user = new User(username, passwordEncoder.encode(password), role);
         userRepository.save(user);
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Поиск пользователя в базе данных.
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с именем " + username + " не найден"));
-
-        // Создание объекта SpringSecurityUser для аутентификации.
+            .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         return new SpringSecurityUser(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()))
+            user.getUsername(),
+            user.getPassword(),
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
     }
 }
