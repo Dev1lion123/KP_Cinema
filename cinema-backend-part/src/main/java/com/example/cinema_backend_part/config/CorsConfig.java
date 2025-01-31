@@ -7,19 +7,19 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableWebMvc  // Включаем поддержку CORS в MVC
-public class CorsConfig {
+@EnableWebMvc
+public class CorsConfig implements WebMvcConfigurer {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Разрешаем CORS для всех путей
-                        .allowedOrigins("http://localhost:3000") // Разрешаем фронтенд
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Разрешенные методы
+                registry.addMapping("/**") // Разрешаем все эндпоинты
+                        .allowedOrigins("http://localhost:3000") // Разрешаем фронт
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Разрешаем основные HTTP-методы
                         .allowedHeaders("*") // Разрешаем все заголовки
-                        .allowCredentials(true); // Разрешаем передачу cookies и токенов
+                        .allowCredentials(true); // Разрешаем передачу куков при использовании авторизации
             }
         };
     }

@@ -1,33 +1,29 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const FilmList = forwardRef((props, ref) => {
+function FilmList() {
     const [films, setFilms] = useState([]);
-
-    const loadFilms = () => {
-        axios.get("http://localhost:8080/api/films")
-            .then((response) => {
-                setFilms(response.data);
-            })
-            .catch((error) => {
-                console.error("Ошибка при загрузке фильмов:", error.message || error);
-            });
-    };
-
-    // Экспортируем метод refreshFilms наружу
-    useImperativeHandle(ref, () => ({
-        refreshFilms: loadFilms,
-    }));
+    const token = localStorage.getItem('token'); // Получаем токен из localStorage
 
     useEffect(() => {
-        loadFilms();
+        axios.get("http://localhost:8080/api/films", {
+            headers: {
+                Authorization: `Bearer ${token}` // Передаем токен
+            }
+        })
+        .then(response => {
+            setFilms(response.data);
+        })
+        .catch(error => {
+            console.error("Ошибка при загрузке фильмов:", error);
+        });
     }, []);
 
     return (
         <div>
             <h1>Список фильмов</h1>
             <ul>
-                {films.map((film) => (
+                {films.map(film => (
                     <li key={film.id}>
                         <h2>{film.title}</h2>
                         <p>{film.genre}</p>
@@ -39,6 +35,6 @@ const FilmList = forwardRef((props, ref) => {
             </ul>
         </div>
     );
-});
+}
 
 export default FilmList;

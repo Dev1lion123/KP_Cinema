@@ -1,20 +1,45 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import FilmList from './components/FilmList';
 import AddFilm from './components/AddFilm';
+import Register from './components/Register';
+import Login from './components/Login';
 
 function App() {
-    const filmListRef = useRef(); // Используем реф для доступа к методу обновления в FilmList
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    const [isRegistering, setIsRegistering] = useState(false); // Переключатель между входом и регистрацией
 
-    const handleFilmAdded = () => {
-        if (filmListRef.current) {
-            filmListRef.current.refreshFilms(); // Обновляем список фильмов
-        }
+    const handleLoginSuccess = () => {
+        setIsAuthenticated(true);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
     };
 
     return (
         <div className="App">
-            <AddFilm onFilmAdded={handleFilmAdded} />
-            <FilmList ref={filmListRef} />
+            {!isAuthenticated ? (
+                <div>
+                    {isRegistering ? (
+                        <>
+                            <Register onRegisterSuccess={() => setIsRegistering(false)} />
+                            <p>Уже есть аккаунт? <button onClick={() => setIsRegistering(false)}>Войти</button></p>
+                        </>
+                    ) : (
+                        <>
+                            <Login onLoginSuccess={handleLoginSuccess} />
+                            <p>Нет аккаунта? <button onClick={() => setIsRegistering(true)}>Зарегистрироваться</button></p>
+                        </>
+                    )}
+                </div>
+            ) : (
+                <div>
+                    <button onClick={handleLogout}>Выйти</button>
+                    <AddFilm />
+                    <FilmList />
+                </div>
+            )}
         </div>
     );
 }
