@@ -1,34 +1,45 @@
 package com.example.cinema_backend_part.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
+import com.example.cinema_backend_part.dto.LoginRequest;
 import com.example.cinema_backend_part.dto.RegisterRequest;
 import com.example.cinema_backend_part.model.User;
 import com.example.cinema_backend_part.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public void register(RegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+    public User authenticateUser(LoginRequest loginRequest) {
+        User user = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+    
+        System.out.println("Stored hash: " + user.getPassword());
+        System.out.println("Plain password: " + loginRequest.getPassword());
+    
+        if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            return user;
+        } else {
+            throw new RuntimeException("Неверный пароль");
         }
+    }
+    
+    
 
+    public User registerUser(RegisterRequest registerRequest) {
         User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // Шифруем пароль
-        user.setRole(User.Role.valueOf(request.getRole())); // Конвертируем строку в Enum
-
-        userRepository.save(user);
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRole("CLIENT"); // По умолчанию роль "CLIENT"
+        return userRepository.save(user);
     }
 }
-

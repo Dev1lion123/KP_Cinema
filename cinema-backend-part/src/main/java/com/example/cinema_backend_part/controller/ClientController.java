@@ -10,6 +10,6 @@ public class ClientController {
 
     @GetMapping
     public String clientDashboard() {
-        return "Welcome to the Client Dashboard!";
+        return "Добро пожаловать в наш кинотеатр!";
     }
 }

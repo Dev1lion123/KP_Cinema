@@ -1,28 +1,46 @@
 package com.example.cinema_backend_part.service;
 
+import com.example.cinema_backend_part.model.Hall;
+import com.example.cinema_backend_part.model.Movie;
+import com.example.cinema_backend_part.model.Session;
+import com.example.cinema_backend_part.repository.HallRepository;
+import com.example.cinema_backend_part.repository.MovieRepository;
+import com.example.cinema_backend_part.repository.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.cinema_backend_part.model.Sessions;
-import com.example.cinema_backend_part.repository.SessionRepository;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SessionService {
+
     @Autowired
     private SessionRepository sessionRepository;
 
-    public List<Sessions> getAllSessions() {
+    @Autowired
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private HallRepository hallRepository;
+
+    public List<Session> getAllSessions() {
         return sessionRepository.findAll();
     }
 
-    public Optional<Sessions> getSessionById(Long id) {
-        return sessionRepository.findById(id);
+    public Session getSessionById(Long id) {
+        return sessionRepository.findById(id).orElse(null);
     }
 
-    public Sessions saveSession(Sessions session) {
+    public Session addSession(Session session) {
+        Movie movie = movieRepository.findById(session.getMovie().getId()).orElse(null);
+        Hall hall = hallRepository.findById(session.getHall().getId()).orElse(null);
+
+        if (movie == null || hall == null) {
+            throw new RuntimeException("Movie or Hall not found");
+        }
+
+        session.setMovie(movie);
+        session.setHall(hall);
         return sessionRepository.save(session);
     }
 

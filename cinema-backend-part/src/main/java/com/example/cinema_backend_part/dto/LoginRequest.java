@@ -1,9 +1,14 @@
 package com.example.cinema_backend_part.dto;
 
-public class RegisterRequest {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class LoginRequest {
     private String username;
     private String password;
-
+    
     public String getUsername() {
         return username;
     }

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 const UpdateFilm = ({ film }) => {
   const [updatedFilm, setUpdatedFilm] = useState({ ...film });
+  const [selectedFilm, setSelectedFilm] = useState(null);
 
   const handleChange = (e) => {
     setUpdatedFilm({
@@ -22,42 +23,22 @@ const UpdateFilm = ({ film }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="title"
-        value={updatedFilm.title}
-        onChange={handleChange}
-        placeholder="Название фильма"
-      />
-      <input
-        type="text"
-        name="genre"
-        value={updatedFilm.genre}
-        onChange={handleChange}
-        placeholder="Жанр"
-      />
-      <textarea
-        name="description"
-        value={updatedFilm.description}
-        onChange={handleChange}
-        placeholder="Описание"
-      />
-      <input
-        type="date"
-        name="releaseDate"
-        value={updatedFilm.releaseDate}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="rating"
-        value={updatedFilm.rating}
-        onChange={handleChange}
-        placeholder="Рейтинг"
-      />
-      <button type="submit">Обновить фильм</button>
-    </form>
+    <div>
+        <h1>Список фильмов</h1>
+        <ul>
+            {films.map(film => (
+                <li key={film.id}>
+                    <h2>{film.title}</h2>
+                    <p>{film.genre}</p>
+                    <p>{film.description}</p>
+                    <p>Дата выхода: {film.releaseDate}</p>
+                    <p>Рейтинг: {film.rating}</p>
+                    <button onClick={() => setSelectedFilm(film)}>Редактировать</button>
+                </li>
+            ))}
+        </ul>
+        {selectedFilm && <UpdateFilm film={selectedFilm} />}
+    </div>
   );
 };
 

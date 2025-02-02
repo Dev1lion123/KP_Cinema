@@ -3,63 +3,78 @@ package com.example.cinema_backend_part.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
-import org.springframework.security.core.userdetails.User;
-import java.util.Date;
-import java.util.List;
-
 import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtTokenProvider {
 
-    private final String secretKey = "mySecretKey";  // Секретный ключ для подписи JWT
+    @Value("${jwt.secret}")
+    private String secret;
 
-    // Генерация JWT токена
-    @SuppressWarnings("deprecation")
-    public String generateToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("role", user.getAuthorities());
+    @Value("${jwt.expiration}")
+    private Long expiration;
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + 3600000); // 1 час
-
+    public String generateToken(String username) {
         return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(validity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
-    // Валидация JWT токена
-    @SuppressWarnings("deprecation")
-    public boolean validateToken(String token) {
+    public Boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-            .setSigningKey(secretKey)
-            .build();
-
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    // Извлечение пользователя из токена
-    @SuppressWarnings("unchecked")
-    public User getUserFromToken(String token) {
-        @SuppressWarnings("deprecation")
-        Claims claims = (Claims) Jwts.parserBuilder()
-        .setSigningKey(secretKey)
-        .build();
-    
-        return new User(claims.getSubject(), "", claims.get("role", List.class));
+    public String getUserFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
-    // Извлечение токена из заголовка
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        return bearerToken != null && bearerToken.startsWith("Bearer ") ? bearerToken.substring(7) : null;
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    // private Boolean isTokenExpired(String token) {
+    //     return extractExpiration(token).before(new Date());
+    // }
 }

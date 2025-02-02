@@ -16,38 +16,23 @@ public class TicketController {
     private TicketService ticketService;
 
     @GetMapping
-    public List<Ticket> getAllTickets() {
-        return ticketService.getAllTickets();
+    public ResponseEntity<List<Ticket>> getAllTickets() {
+        return ResponseEntity.ok(ticketService.getAllTickets());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
-        return ticketService.getTicketById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Ticket ticket = ticketService.getTicketById(id);
+        return ResponseEntity.ok(ticket);
     }
 
-    @PostMapping
-    public Ticket addTicket(@RequestBody Ticket ticket) {
-        return ticketService.saveTicket(ticket);
+    @PostMapping("/buy")
+    public ResponseEntity<Ticket> buyTicket(@RequestParam Long sessionId, @RequestParam Long userId) {
+        return ResponseEntity.ok(ticketService.buyTicket(sessionId, userId));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket updatedTicket) {
-        return ticketService.getTicketById(id)
-                .map(ticket -> {
-                    ticket.setPrice(updatedTicket.getPrice());
-                    ticket.setSession(updatedTicket.getSession());
-                    ticket.setSeatNumber(updatedTicket.getSeatNumber());
-                    Ticket savedTicket = ticketService.saveTicket(ticket);
-                    return ResponseEntity.ok(savedTicket);
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
-        ticketService.deleteTicket(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/refund/{id}")
+    public ResponseEntity<Ticket> refundTicket(@PathVariable Long id) {
+        return ResponseEntity.ok(ticketService.refundTicket(id));
     }
 }

@@ -16,32 +16,13 @@ public class HallController {
     private HallService hallService;
 
     @GetMapping
-    public List<Hall> getAllHalls() {
-        return hallService.getAllHalls();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Hall> getHallById(@PathVariable Long id) {
-        return hallService.getHallById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<List<Hall>> getAllHalls() {
+        return ResponseEntity.ok(hallService.getAllHalls());
     }
 
     @PostMapping
-    public Hall addHall(@RequestBody Hall hall) {
-        return hallService.saveHall(hall);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Hall> updateHall(@PathVariable Long id, @RequestBody Hall updatedHall) {
-        return hallService.getHallById(id)
-                .map(hall -> {
-                    hall.setName(updatedHall.getName());
-                    hall.setCapacity(updatedHall.getCapacity());
-                    Hall savedHall = hallService.saveHall(hall);
-                    return ResponseEntity.ok(savedHall);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Hall> addHall(@RequestBody Hall hall) {
+        return ResponseEntity.ok(hallService.addHall(hall));
     }
 
     @DeleteMapping("/{id}")

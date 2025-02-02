@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const AddFilm = () => {
+const UpdateFilm = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [film, setFilm] = useState({
         title: '',
         genre: '',
@@ -9,6 +12,23 @@ const AddFilm = () => {
         releaseDate: '',
         rating: 0,
     });
+
+    useEffect(() => {
+        const fetchFilm = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:8080/api/films/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setFilm(response.data);
+            } catch (error) {
+                console.error('Ошибка при загрузке фильма:', error);
+            }
+        };
+        fetchFilm();
+    }, [id]);
 
     const handleChange = (e) => {
         setFilm({
@@ -21,15 +41,16 @@ const AddFilm = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:8080/api/films', film, {
+            const response = await axios.put(`http://localhost:8080/api/films/${id}`, film, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log('Фильм добавлен:', response.data);
-            alert('Фильм успешно добавлен!');
+            console.log('Фильм обновлен:', response.data);
+            alert('Фильм успешно обновлен!');
+            navigate('/films');
         } catch (error) {
-            console.error('Ошибка при добавлении фильма:', error);
+            console.error('Ошибка при обновлении фильма:', error);
         }
     };
 
@@ -68,9 +89,9 @@ const AddFilm = () => {
                 onChange={handleChange}
                 placeholder="Рейтинг"
             />
-            <button type="submit">Добавить фильм</button>
+            <button type="submit">Обновить фильм</button>
         </form>
     );
 };
 
-export default AddFilm;
+export default UpdateFilm;

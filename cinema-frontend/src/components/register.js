@@ -1,52 +1,35 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Register({ onRegisterSuccess }) {
+function Register() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('CLIENT');
-    const [error, setError] = useState(''); // Для отображения ошибок
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         try {
-            const response = await fetch("http://localhost:8080/api/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: username.trim(),
-                    password: password.trim(),
-                    role: role,
-                }),
+            const response = await axios.post("http://localhost:8080/api/auth/register", 
+            { 
+                username, 
+                password 
             });
-    
-            const contentType = response.headers.get("content-type");
-    
-            if (!response.ok) {
-                const errorText = contentType && contentType.includes("application/json")
-                    ? (await response.json()).message
-                    : await response.text();
-                throw new Error(errorText);
-            }
-    
-            const data = contentType && contentType.includes("application/json")
-                ? await response.json()
-                : { message: await response.text() };
-    
-            alert(`Успех: ${data.message}`);
+
+            alert("Регистрация успешна! Теперь войдите в систему.");
+            navigate('/login');
         } catch (err) {
             console.error("Ошибка регистрации:", err);
-            alert(err.message);
+            setError(err.response?.data?.message || "Ошибка при регистрации");
         }
     };
-    
 
     return (
         <div>
             <h1>Регистрация</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>} {/* Отображение ошибок */}
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="username">Логин:</label>
@@ -69,19 +52,6 @@ function Register({ onRegisterSuccess }) {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                </div>
-                <div>
-                    <label htmlFor="role">Роль:</label>
-                    <select
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        required
-                    >
-                        <option value="CLIENT">Клиент</option>
-                        <option value="CASHIER">Кассир</option>
-                        <option value="ADMIN">Администратор</option>
-                    </select>
                 </div>
                 <button type="submit">Зарегистрироваться</button>
             </form>
